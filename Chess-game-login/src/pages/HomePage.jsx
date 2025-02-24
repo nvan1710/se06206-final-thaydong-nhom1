@@ -1,5 +1,5 @@
 import React from 'react';
-import SignInForm from '../components/SignInForm'; // Import SignInForm component
+
 
 const HomePage = () => {
   return (
@@ -9,7 +9,7 @@ const HomePage = () => {
           Welcome to Chess Game!
           Please Sign In to Play
         </h2>
-        <SignInForm /> {/* Add SignInForm here */}
+
       </div>
     </div>
   );
