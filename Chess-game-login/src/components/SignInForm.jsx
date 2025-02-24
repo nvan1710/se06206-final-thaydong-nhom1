@@ -9,6 +9,7 @@ const SignInForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   
+<<<<<<< Updated upstream
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
       alert("User not found! Please sign up first.");
@@ -29,7 +30,36 @@ const SignInForm = () => {
     } else {
       alert("Invalid email or password!");
     }
+=======
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+  
+    // Nếu email là admin -> gán role "admin", ngược lại là "user"
+    const role = email === "admin@gmail.com" ? "admin" : "user";
+  
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      password,
+      gender,
+      birthday,
+      address,
+      country,
+      role, // Thêm role vào dữ liệu
+    };
+  
+    localStorage.setItem("user", JSON.stringify(userData));
+  
+    setSuccessMessage("Registration successful! You can now sign in.");
+    setTimeout(() => {
+      navigate("/signin");
+    }, 2000);
+>>>>>>> Stashed changes
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
