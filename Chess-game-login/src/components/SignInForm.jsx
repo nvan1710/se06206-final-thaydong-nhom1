@@ -8,25 +8,26 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Lấy dữ liệu user đã đăng ký từ localStorage
-    const storedUser = localStorage.getItem('user');
+  
+    const storedUser = localStorage.getItem("user");
     if (!storedUser) {
-      alert('User not found! Please sign up first.');
+      alert("User not found! Please sign up first.");
       return;
     }
-
-    // Parse dữ liệu JSON
+  
     const userData = JSON.parse(storedUser);
-
-    // Kiểm tra email & password
+  
     if (email === userData.email && password === userData.password) {
-      console.log('Login successful');
-
-      // Chuyển hướng đến Dashboard
-      navigate('/dashboard');
+      console.log("Login successful");
+  
+      // Kiểm tra role: nếu là admin thì vào /admin, nếu là user thì vào /dashboard
+      if (userData.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
-      alert('Invalid email or password!');
+      alert("Invalid email or password!");
     }
   };
 
