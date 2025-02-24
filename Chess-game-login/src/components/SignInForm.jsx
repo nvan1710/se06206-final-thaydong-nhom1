@@ -8,27 +8,23 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Lấy dữ liệu user đã đăng ký từ localStorage
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-      alert('User not found! Please sign up first.');
-      return;
-    }
-
-    // Parse dữ liệu JSON
-    const userData = JSON.parse(storedUser);
-
-    // Kiểm tra email & password
-    if (email === userData.email && password === userData.password) {
+  
+    // Lấy danh sách người dùng từ localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+  
+    // Tìm kiếm người dùng có email & password khớp
+    const user = storedUsers.find(u => u.email === email && u.password === password);
+  
+    if (user) {
       console.log('Login successful');
-
-      // Chuyển hướng đến Dashboard
-      navigate('/dashboard');
+      localStorage.setItem('currentUser', JSON.stringify(user)); // Lưu thông tin user đăng nhập
+  
+      navigate('/dashboard'); // Chuyển hướng đến Dashboard
     } else {
       alert('Invalid email or password!');
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
