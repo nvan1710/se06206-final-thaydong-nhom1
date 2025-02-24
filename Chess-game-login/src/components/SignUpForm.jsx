@@ -16,15 +16,24 @@ const SignUpForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Check if passwords match
+  
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-
-    // Save the user information (this is just a simulation, you can save it to local storage or a backend)
-    const userData = {
+  
+    // Lấy danh sách người dùng hiện tại từ localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+  
+    // Kiểm tra email đã tồn tại chưa
+    const existingUser = storedUsers.find(user => user.email === email);
+    if (existingUser) {
+      alert('Email is already registered! Please use another email.');
+      return;
+    }
+  
+    // Tạo đối tượng user mới
+    const newUser = {
       firstName,
       lastName,
       email,
@@ -34,17 +43,16 @@ const SignUpForm = () => {
       address,
       country
     };
-
-    // Store user data in localStorage (for demonstration purposes)
-    localStorage.setItem('user', JSON.stringify(userData));
-
-    // Display success message
+  
+    // Lưu danh sách người dùng vào localStorage
+    storedUsers.push(newUser);
+    localStorage.setItem('users', JSON.stringify(storedUsers));
+  
     setSuccessMessage('Registration successful! You can now sign in.');
-
-    // After a delay, redirect to the Sign In page
+  
     setTimeout(() => {
       navigate('/signin');
-    }, 2000); // Redirect after 2 seconds
+    }, 2000);
   };
 
   return (
