@@ -24,7 +24,7 @@ const SignInForm = () => {
       console.log('Login successful');
 
       // Chuyển hướng đến Dashboard
-      navigate('/dashboard');
+      navigate('/homepage');
     } else {
       alert('Invalid email or password!');
     }
