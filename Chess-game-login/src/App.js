@@ -6,6 +6,8 @@ import SignUpForm from "./components/SignUpForm"; // Adjust path if necessary
 import ForgotPassword from "./pages/ForgotPassword";
 
 
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -15,6 +17,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        
       </Routes>
     </BrowserRouter>
   );
