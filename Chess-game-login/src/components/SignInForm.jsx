@@ -1,109 +1,105 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignInForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Hook điều hướng
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Lấy dữ liệu user đã đăng ký từ localStorage
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-      alert('User not found! Please sign up first.');
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((u) => u.email === email);
+
+    if (!user) {
+      alert("User not found! Please sign up first.");
       return;
     }
 
-    // Parse dữ liệu JSON
-    const userData = JSON.parse(storedUser);
+    if (user.isBlocked) {
+      alert("Your account has been blocked by the admin.");
+      return;
+    }
 
-    // Kiểm tra email & password
-    if (email === userData.email && password === userData.password) {
-      console.log('Login successful');
-
-      // Chuyển hướng đến Dashboard
-      navigate('/homepage');
+    if (email === user.email && password === user.password) {
+      alert("Login successful!");
+      navigate("/homepage");
     } else {
-      alert('Invalid email or password!');
+      alert("Invalid email or password!");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign In</h2>
-
-        {/* Hình ảnh trên phần nhập email */}
+    <div className="min-h-screen flex items-center justify-center bg-green-100">
+      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
         <div className="flex justify-center mb-4">
-          <img
-            src="https://cdn11.bigcommerce.com/s-fhcm7h/images/stencil/1280x1280/products/789/6518/IMG_8197-removebg__85699.1731310806.png?c=2"
-            alt="Sign In"
-            className="w-30 h-50 mx-auto mb-4"
-          />
+          <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-3xl font-bold">🌿</span>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          {/* Email */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email</label>
+        <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
+          Log In
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
             <input
               type="email"
-              id="email"
-              className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
               required
             />
           </div>
 
-          {/* Password */}
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600">Password</label>
+          <div>
             <input
               type="password"
-              id="password"
-              className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
               required
             />
           </div>
 
-          {/* Forgot Password & Sign Up */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <label className="flex items-center">
+              <input type="checkbox" className="mr-2" />
+              Remember me
+            </label>
             <button
               type="button"
-              onClick={() => navigate('/forgot-password')}
-              className="text-sm text-blue-500 hover:underline"
+              onClick={() => navigate("/forgot-password")}
+              className="text-green-600 hover:underline"
             >
-              Forgot Password?
-            </button>
-
-            <button
-              type="button"
-              onClick={() => navigate('/signup')}
-              className="text-sm text-blue-500 hover:underline"
-            >
-              Register New Account
+              Forgot password?
             </button>
           </div>
 
-          {/* Sign In Button */}
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-green-700 text-white py-2 rounded-md font-bold hover:bg-green-800 transition"
           >
-            Sign In
+            Log In
           </button>
         </form>
+
+        <p className="mt-4 text-center text-gray-600">
+          Don't have an account?{" "}
+          <button
+            onClick={() => navigate("/signup")}
+            className="text-green-600 font-bold hover:underline"
+          >
+            Sign Up
+          </button>
+        </p>
       </div>
     </div>
   );
 };
 
 export default SignInForm;
-
