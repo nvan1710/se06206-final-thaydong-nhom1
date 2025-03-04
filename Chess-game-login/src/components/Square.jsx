@@ -4,20 +4,16 @@ import { useDrag, useDrop } from "react-dnd";
 const ItemTypes = { PIECE: "piece" };
 
 const Square = ({ piece, row, col, movePiece }) => {
-  const isDark = (row + col) % 2 === 1;
-  const pieceColor = "♙♖♘♗♕♔".includes(piece) ? "text-white" : "text-brown-700";
+  const isWhitePiece = "♙♖♘♗♕♔".includes(piece);
+const isBlackPiece = "♟♜♞♝♛♚".includes(piece); // Identify black pieces properly
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.PIECE,
-    item: { row, col, piece },
-    canDrag: () => {
-      const isWhitePiece = "♙♖♘♗♕♔".includes(piece);
-      return (turn === "white" && isWhitePiece) || (turn === "black" && !isWhitePiece);
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
+const [{ isDragging }, drag] = useDrag(() => ({
+  type: ItemTypes.PIECE,
+  item: { row, col, piece },
+  canDrag: (turn === "white" && isWhitePiece) || (turn === "black" && isBlackPiece), // Now allows black pieces to move on black's turn
+  collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
+}));
+  
   
 
   const [, dropRef] = useDrop(() => ({
