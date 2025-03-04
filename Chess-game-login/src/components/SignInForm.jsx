@@ -24,7 +24,7 @@ const SignInForm = () => {
 
     if (email === user.email && password === user.password) {
       alert("Login successful!");
-      navigate("/homepage");
+      navigate("/dashboard"); // Redirect to Chessboard
     } else {
       alert("Invalid email or password!");
     }
