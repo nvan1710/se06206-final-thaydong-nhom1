@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaChess, FaPuzzlePiece, FaGraduationCap, FaVideo, FaNewspaper, FaUsers, FaEllipsisH } from "react-icons/fa";
+import { 
+  FaChess, FaPuzzlePiece, FaGraduationCap, FaVideo, 
+  FaNewspaper, FaUsers, FaEllipsisH 
+} from "react-icons/fa";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
+  // Function to handle difficulty selection
+  const handleDifficultySelect = (difficulty) => {
+    setShowModal(false); // Close modal
+    navigate(`/chessboard?difficulty=${difficulty}`); // Navigate to chessboard with difficulty parameter
+  };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
@@ -46,10 +56,19 @@ const Dashboard = () => {
         </nav>
 
         <div className="mt-auto">
-          <button className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600">
+          {/* ✅ Navigate to Sign Up */}
+          <button 
+            className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600"
+            onClick={() => navigate("/signup")}
+          >
             Sign Up
           </button>
-          <button className="w-full bg-gray-700 text-white py-2 rounded-md font-bold mt-2 hover:bg-gray-600">
+          
+          {/* ✅ Navigate to Log In */}
+          <button 
+            className="w-full bg-gray-700 text-white py-2 rounded-md font-bold mt-2 hover:bg-gray-600"
+            onClick={() => navigate("/login")}
+          >
             Log In
           </button>
         </div>
@@ -96,12 +115,47 @@ const Dashboard = () => {
           </button>
           <button
             className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
-            onClick={() => navigate("/chessboard")}
+            onClick={() => setShowModal(true)} // Open difficulty selection modal
           >
             Play Computer
           </button>
         </div>
       </main>
+
+      {/* Difficulty Selection Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Choose Difficulty</h2>
+            <div className="space-y-3">
+              <button
+                className="w-60 bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600"
+                onClick={() => handleDifficultySelect("easy")}
+              >
+                Easy
+              </button>
+              <button
+                className="w-60 bg-yellow-500 text-black py-2 rounded-md font-bold hover:bg-yellow-600"
+                onClick={() => handleDifficultySelect("normal")}
+              >
+                Normal
+              </button>
+              <button
+                className="w-60 bg-red-500 text-black py-2 rounded-md font-bold hover:bg-red-600"
+                onClick={() => handleDifficultySelect("hard")}
+              >
+                Hard
+              </button>
+            </div>
+            <button
+              className="w-full mt-4 bg-gray-700 text-white py-2 rounded-md font-bold hover:bg-gray-600"
+              onClick={() => setShowModal(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
