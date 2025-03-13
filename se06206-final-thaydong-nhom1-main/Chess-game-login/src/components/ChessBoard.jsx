@@ -53,7 +53,7 @@ const Square = ({ piece, row, col, movePiece, isKingInCheck, selectedPiece, setS
         ${isDark ? "bg-[#9A6553]" : "bg-[#D5B793]"}
         ${isKingInCheck ? "border-4 border-red-500" : ""}
         ${isSelected ? "border-4 border-yellow-500" : ""}
-        ${isValidMoveSquare ? "bg-green-300" : ""}
+        ${isValidMoveSquare ? "border-4 border-green-500" : ""}
         ${isCaptureMove ? "border-4 border-red-500" : ""}
       `}
       onClick={handleClick}
