@@ -19,32 +19,27 @@ const Dashboard = () => {
             <FaChess />
             <span>Play</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaPuzzlePiece />
-            <span>Puzzles</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/leaderboard")}>
+            <FaTrophy />
+            <span>Leaderboard</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaGraduationCap />
-            <span>Learn</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/history")}>
+            <FaHistory />
+            <span>Game History</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaVideo />
-            <span>Watch</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/tutorials")}>
+            <FaBookOpen />
+            <span>Tutorials</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaNewspaper />
-            <span>News</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/forums")}>
+            <FaComments />
+            <span>Forums</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaUsers />
-            <span>Social</span>
-          </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaEllipsisH />
-            <span>More</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/settings")}>
+            <FaCog />
+            <span>Settings</span>
           </button>
         </nav>
-
         <div className="mt-auto">
           <button className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600">
             Sign Up
