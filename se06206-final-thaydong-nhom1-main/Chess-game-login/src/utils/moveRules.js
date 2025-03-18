@@ -26,13 +26,113 @@ export const getValidMoves = (piece, row, col, board) => {
       validMoves = getKingMoves(row, col, board, isWhite);
       break;
     default:
+
+  const moves = [];
+  const isWhite = "♙♖♘♗♕♔".includes(piece);
+  const direction = isWhite ? -1 : 1; // Trắng đi lên (-1), Đen đi xuống (+1)
+
+  switch (piece) {
+    case "♙": // Tốt trắng
+    case "♟": // Tốt đen
+      if (!board[row + direction][col]) {
+        moves.push({ row: row + direction, col });
+        if ((isWhite && row === 6) || (!isWhite && row === 1)) {
+          if (!board[row + 2 * direction][col]) {
+            moves.push({ row: row + 2 * direction, col });
+          }
+        }
+      }
+      if (col > 0 && board[row + direction][col - 1] && isOpponent(piece, board[row + direction][col - 1])) {
+        moves.push({ row: row + direction, col: col - 1 });
+      }
+      if (col < 7 && board[row + direction][col + 1] && isOpponent(piece, board[row + direction][col + 1])) {
+        moves.push({ row: row + direction, col: col + 1 });
+      }
+      break;
+
+    case "♖": case "♜": // Xe
+      moves.push(...getLinearMoves(row, col, board, [[-1, 0], [1, 0], [0, -1], [0, 1]]));
+      break;
+
+    case "♘": case "♞": // Mã
+      moves.push(...getKnightMoves(row, col, board));
+      break;
+
+    case "♗": case "♝": // Tượng
+      moves.push(...getLinearMoves(row, col, board, [[-1, -1], [-1, 1], [1, -1], [1, 1]]));
+      break;
+
+    case "♕": case "♛": // Hậu
+      moves.push(...getLinearMoves(row, col, board, [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]));
+      break;
+
+    case "♔": case "♚": // Vua
+      moves.push(...getKingMoves(row, col, board));
+
       break;
   }
 
-  return validMoves;
+  return moves;
 };
 
+
 // ✅ Xác minh nước đi có hợp lệ không
+// Kiểm tra xem có phải quân địch không
+const isOpponent = (piece, targetPiece) => {
+  return targetPiece && ("♙♖♘♗♕♔".includes(piece) !== "♙♖♘♗♕♔".includes(targetPiece));
+};
+
+// Lấy nước đi tuyến tính (dùng cho Xe, Tượng, Hậu)
+const getLinearMoves = (row, col, board, directions) => {
+  const moves = [];
+  directions.forEach(([dr, dc]) => {
+    let r = row + dr, c = col + dc;
+    while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+      if (!board[r][c]) {
+        moves.push({ row: r, col: c });
+      } else {
+        if (isOpponent(board[row][col], board[r][c])) {
+          moves.push({ row: r, col: c });
+        }
+        break;
+      }
+      r += dr;
+      c += dc;
+    }
+  });
+  return moves;
+};
+
+// Lấy nước đi của Mã
+const getKnightMoves = (row, col, board) => {
+  const moves = [];
+  const knightMoves = [[-2, -1], [-2, 1], [2, -1], [2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2]];
+  knightMoves.forEach(([dr, dc]) => {
+    const r = row + dr, c = col + dc;
+    if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+      if (!board[r][c] || isOpponent(board[row][col], board[r][c])) {
+        moves.push({ row: r, col: c });
+      }
+    }
+  });
+  return moves;
+};
+
+// Lấy nước đi của Vua
+const getKingMoves = (row, col, board) => {
+  const moves = [];
+  const kingMoves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+  kingMoves.forEach(([dr, dc]) => {
+    const r = row + dr, c = col + dc;
+    if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+      if (!board[r][c] || isOpponent(board[row][col], board[r][c])) {
+        moves.push({ row: r, col: c });
+      }
+    }
+  });
+  return moves;
+};
+}
 export const isValidMove = (piece, fromRow, fromCol, toRow, toCol, board) => {
   const validMoves = getValidMoves(piece, fromRow, fromCol, board);
   return validMoves.some(move => move.row === toRow && move.col === toCol);
@@ -66,7 +166,6 @@ const getPawnMoves = (row, col, board, isWhite) => {
   }
   return moves;
 };
-
 
 export const promotePawn = async (row, col, board, isWhite) => {
   return new Promise((resolve) => {
