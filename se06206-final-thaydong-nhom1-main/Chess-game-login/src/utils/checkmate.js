@@ -12,8 +12,6 @@ export const findKingPosition = (board, isWhite) => {
   }
   return null;
 };
-
-// 📍 Kiểm tra xem vua có bị chiếu không
 // 📍 Kiểm tra xem vua có bị chiếu không
 export const isKingInCheck = (board, isWhite) => {
   const kingPos = findKingPosition(board, isWhite);
