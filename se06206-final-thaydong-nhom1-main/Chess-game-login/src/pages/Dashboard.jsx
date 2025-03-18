@@ -1,6 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaChess, FaPuzzlePiece, FaGraduationCap, FaVideo, FaNewspaper, FaUsers, FaEllipsisH } from "react-icons/fa";
+import { 
+  FaChess, 
+  FaPuzzlePiece, 
+  FaGraduationCap, 
+  FaVideo, 
+  FaNewspaper, 
+  FaUsers, 
+  FaEllipsisH, 
+  FaTrophy, 
+  FaHistory, 
+  FaBookOpen, 
+  FaComments, 
+  FaCog 
+} from "react-icons/fa";
 
 const Dashboard = () => {
   const navigate = useNavigate();
