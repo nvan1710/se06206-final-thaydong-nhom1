@@ -12,17 +12,27 @@ import {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showDifficulty, setShowDifficulty] = useState(false); // Hiện modal chọn mức độ
+  const [showOnlineMode, setShowOnlineMode] = useState(false); // Hiện modal chọn chế độ online
 
   const handlePlayComputer = (difficulty) => {
-    setShowDifficulty(false); // Đóng modal
-    navigate(`/chessboard?difficulty=${difficulty}`); // Điều hướng đến trang chơi
+    setShowDifficulty(false);
+    navigate(`/chessboard?difficulty=${difficulty}`);
+  };
+
+  const handlePlayOnline = (mode) => {
+    setShowOnlineMode(false);
+    navigate(`/play-online?mode=${mode}`);
   };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
       {/* Sidebar */}
       <aside className="w-64 bg-black p-5 flex flex-col space-y-6">
-        <div className="flex items-center space-x-2 text-green-500 text-2xl font-bold">
+        {/* Logo, bấm vào sẽ chuyển về trang chủ */}
+        <div 
+          className="flex items-center space-x-2 text-green-500 text-2xl font-bold cursor-pointer hover:text-green-400"
+          onClick={() => navigate("/")}
+        >
           <FaChess />
           <span>Chess.com</span>
         </div>
@@ -64,7 +74,7 @@ const Dashboard = () => {
           </button>
           <button 
             className="w-full bg-gray-700 text-white py-2 rounded-md font-bold mt-2 hover:bg-gray-600"
-            onClick={() => navigate("/signin")}
+            onClick={() => navigate("/login")}
           >
             Log In
           </button>
@@ -106,7 +116,7 @@ const Dashboard = () => {
         <div className="mt-6 space-y-4">
           <button
             className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
-            onClick={() => navigate("/chessboard")}
+            onClick={() => setShowOnlineMode(true)}
           >
             Play Online
           </button>
@@ -119,37 +129,46 @@ const Dashboard = () => {
         </div>
       </main>
 
-      {/* Modal chọn mức độ chơi */}
+      {/* Modal chọn chế độ chơi Online */}
+      {showOnlineMode && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Choose Mode</h2>
+            <div className="space-y-3">
+              <button 
+                className="w-40 bg-blue-500 text-black py-2 rounded-lg font-bold hover:bg-blue-600 transition"
+                onClick={() => handlePlayOnline("players")}
+              >
+                VS Players
+              </button>
+              <button 
+                className="w-40 bg-purple-500 text-black py-2 rounded-lg font-bold hover:bg-purple-600 transition"
+                onClick={() => handlePlayOnline("friends")}
+              >
+                VS Friends
+              </button>
+            </div>
+            <button 
+              className="mt-4 w-40 bg-gray-600 text-white py-2 rounded-lg font-bold hover:bg-gray-700 transition"
+              onClick={() => setShowOnlineMode(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal chọn mức độ chơi với Máy */}
       {showDifficulty && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
             <h2 className="text-2xl font-bold mb-4">Choose Difficulty</h2>
             <div className="space-y-3">
-              <button 
-                className="w-40 bg-green-500 text-black py-2 rounded-lg font-bold hover:bg-green-600 transition"
-                onClick={() => handlePlayComputer("easy")}
-              >
-                Easy
-              </button>
-              <button 
-                className="w-40 bg-yellow-500 text-black py-2 rounded-lg font-bold hover:bg-yellow-600 transition"
-                onClick={() => handlePlayComputer("normal")}
-              >
-                Normal
-              </button>
-              <button 
-                className="w-40 bg-red-500 text-black py-2 rounded-lg font-bold hover:bg-red-600 transition"
-                onClick={() => handlePlayComputer("hard")}
-              >
-                Hard
-              </button>
+              <button className="w-40 bg-green-500 text-black py-2 rounded-lg font-bold hover:bg-green-600" onClick={() => handlePlayComputer("easy")}>Easy</button>
+              <button className="w-40 bg-yellow-500 text-black py-2 rounded-lg font-bold hover:bg-yellow-600" onClick={() => handlePlayComputer("normal")}>Normal</button>
+              <button className="w-40 bg-red-500 text-black py-2 rounded-lg font-bold hover:bg-red-600" onClick={() => handlePlayComputer("hard")}>Hard</button>
             </div>
-            <button 
-              className="mt-4 w-40 bg-gray-600 text-white py-2 rounded-lg font-bold hover:bg-gray-700 transition"
-              onClick={() => setShowDifficulty(false)}
-            >
-              Cancel
-            </button>
+            <button className="mt-4 w-40 bg-gray-600 text-white py-2 rounded-lg font-bold hover:bg-gray-700 transition" onClick={() => setShowDifficulty(false)}>Cancel</button>
           </div>
         </div>
       )}
