@@ -1,13 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   FaChess, 
-  FaPuzzlePiece, 
-  FaGraduationCap, 
-  FaVideo, 
-  FaNewspaper, 
-  FaUsers, 
-  FaEllipsisH, 
   FaTrophy, 
   FaHistory, 
   FaBookOpen, 
@@ -17,6 +11,12 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [showDifficulty, setShowDifficulty] = useState(false); // Hiện modal chọn mức độ
+
+  const handlePlayComputer = (difficulty) => {
+    setShowDifficulty(false); // Đóng modal
+    navigate(`/chessboard?difficulty=${difficulty}`); // Điều hướng đến trang chơi
+  };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
@@ -53,11 +53,19 @@ const Dashboard = () => {
             <span>Settings</span>
           </button>
         </nav>
+
+        {/* Login & Sign Up Buttons */}
         <div className="mt-auto">
-          <button className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600">
+          <button 
+            className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600"
+            onClick={() => navigate("/signup")}
+          >
             Sign Up
           </button>
-          <button className="w-full bg-gray-700 text-white py-2 rounded-md font-bold mt-2 hover:bg-gray-600">
+          <button 
+            className="w-full bg-gray-700 text-white py-2 rounded-md font-bold mt-2 hover:bg-gray-600"
+            onClick={() => navigate("/signin")}
+          >
             Log In
           </button>
         </div>
@@ -104,12 +112,47 @@ const Dashboard = () => {
           </button>
           <button
             className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
-            onClick={() => navigate("/chessboard")}
+            onClick={() => setShowDifficulty(true)}
           >
             Play Computer
           </button>
         </div>
       </main>
+
+      {/* Modal chọn mức độ chơi */}
+      {showDifficulty && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Choose Difficulty</h2>
+            <div className="space-y-3">
+              <button 
+                className="w-40 bg-green-500 text-black py-2 rounded-lg font-bold hover:bg-green-600 transition"
+                onClick={() => handlePlayComputer("easy")}
+              >
+                Easy
+              </button>
+              <button 
+                className="w-40 bg-yellow-500 text-black py-2 rounded-lg font-bold hover:bg-yellow-600 transition"
+                onClick={() => handlePlayComputer("normal")}
+              >
+                Normal
+              </button>
+              <button 
+                className="w-40 bg-red-500 text-black py-2 rounded-lg font-bold hover:bg-red-600 transition"
+                onClick={() => handlePlayComputer("hard")}
+              >
+                Hard
+              </button>
+            </div>
+            <button 
+              className="mt-4 w-40 bg-gray-600 text-white py-2 rounded-lg font-bold hover:bg-gray-700 transition"
+              onClick={() => setShowDifficulty(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
