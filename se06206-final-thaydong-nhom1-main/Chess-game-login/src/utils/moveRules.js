@@ -190,6 +190,7 @@ export const promotePawn = async (row, col, board, isWhite) => {
 };
 
 
+
 // ✅ Xử lý di chuyển Xe (Rook)
 const getRookMoves = (row, col, board, isWhite) => {
   return getLinearMoves(row, col, board, isWhite, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
@@ -259,6 +260,7 @@ const getLinearMoves = (row, col, board, isWhite, directions) => {
 
   return moves;
 };
+
 
 // ✅ Xuất tất cả các hàm cần thiết
 export { getPawnMoves, getRookMoves, getBishopMoves, getKnightMoves, getKingMoves, getLinearMoves };
