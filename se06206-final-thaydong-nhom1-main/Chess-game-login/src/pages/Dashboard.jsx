@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChess, FaPuzzlePiece, FaGraduationCap, FaVideo, FaNewspaper, FaUsers, FaEllipsisH } from "react-icons/fa";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [roomId, setRoomId] = useState(""); // State để lưu roomId
+  const [showInput, setShowInput] = useState(false); // State để hiển thị ô nhập
+
+  const handleJoinRoom = () => {
+    if (roomId.trim() !== "") {
+      navigate(`/chessboard/${roomId}`); // Điều hướng đến trang bàn cờ với roomId
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
@@ -88,18 +96,38 @@ const Dashboard = () => {
 
         {/* Buttons */}
         <div className="mt-6 space-y-4">
-          <button
-            className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
-            onClick={() => navigate("/chessboard")}
-          >
-            Play Online
-          </button>
-          <button
-            className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
-            onClick={() => navigate("/chessboard")}
-          >
-            Play Computer
-          </button>
+          {!showInput ? (
+            <>
+              <button
+                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
+                onClick={() => setShowInput(true)}
+              >
+                Play Online
+              </button>
+              <button
+                className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
+                onClick={() => navigate("/chessboard")}
+              >
+                Play Computer
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col items-center space-y-4">
+              <input
+                type="text"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                placeholder="Enter Room ID"
+                className="w-72 p-3 text-black border rounded-lg"
+              />
+              <button
+                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
+                onClick={handleJoinRoom}
+              >
+                Join Room
+              </button>
+            </div>
+          )}
         </div>
       </main>
     </div>

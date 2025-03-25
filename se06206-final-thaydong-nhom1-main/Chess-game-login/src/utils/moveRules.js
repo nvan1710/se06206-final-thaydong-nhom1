@@ -229,25 +229,75 @@ const findKingPosition = (board, isWhite) => {
   }
   return null;
 };
-const isKingInCheck = (board, isWhite) => {
-  const kingPos = findKingPosition(board, isWhite);
-  if (!kingPos) return false; // Không tìm thấy vua (tránh lỗi)
+const isKingInCheck = (board, isWhiteTurn) => {
+  const kingPos = findKingPosition(board, isWhiteTurn);
+  if (!kingPos) return false; // Nếu không tìm thấy vua, trả về false
 
-  const { row: kingRow, col: kingCol } = kingPos;
-
-  // Duyệt qua toàn bộ bàn cờ để tìm quân đối phương có thể chiếu vua
+  // Kiểm tra xem có quân đối phương nào có thể tấn công vua không
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
       const piece = board[row][col];
-      if (!piece) continue; // Ô trống bỏ qua
-
-      const isEnemy = "♙♖♘♗♕♔".includes(piece) !== isWhite;
-      if (isEnemy && isValidMove(piece, row, col, kingRow, kingCol, board)) {
-        return true; // Nếu có quân địch có thể đi đến vị trí vua, vua đang bị chiếu
+      if (piece && "♙♖♘♗♕♔".includes(piece) !== isWhiteTurn) {
+        const validMoves = getValidMoves(piece, row, col, board);
+        if (validMoves.some(move => move.row === kingPos.row && move.col === kingPos.col)) {
+          return true;
+        }
       }
     }
   }
 
-  return false; // Không có quân nào chiếu vua
+  return false;
+};
+// Kiểm tra xem vua có thể thoát chiếu hay không
+const canKingEscape = (board, isWhite) => {
+  const kingPos = findKingPosition(board, isWhite);
+  if (!kingPos) return false;
+
+  const kingMoves = getKingMoves(kingPos.row, kingPos.col, board);
+  return kingMoves.some(move => {
+      const newBoard = board.map(row => [...row]);
+      newBoard[move.row][move.col] = isWhite ? "♔" : "♚";
+      newBoard[kingPos.row][kingPos.col] = "";
+      return !isKingInCheck(newBoard, isWhite);
+  });
+};
+
+// Kiểm tra nếu có quân nào có thể chặn hoặc ăn quân đang chiếu vua
+const canBlockOrCapture = (board, isWhite) => {
+  const kingPos = findKingPosition(board, isWhite);
+  if (!kingPos) return false;
+
+  let attackers = [];
+  // Xác định tất cả quân cờ đang chiếu vua
+  for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+          const piece = board[row][col];
+          if (piece && "♙♖♘♗♕♔".includes(piece) !== isWhite) {
+              const moves = getValidMoves(piece, row, col, board);
+              if (moves.some(move => move.row === kingPos.row && move.col === kingPos.col)) {
+                  attackers.push({ row, col });
+              }
+          }
+      }
+  }
+
+  // Nếu có nhiều hơn 1 quân chiếu, không thể chặn => Checkmate
+  if (attackers.length > 1) return false;
+
+  // Nếu chỉ có 1 quân chiếu, kiểm tra có thể ăn hoặc chặn không
+  const attacker = attackers[0];
+  for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+          const piece = board[row][col];
+          if (piece && "♙♖♘♗♕♔".includes(piece) === isWhite) {
+              const moves = getValidMoves(piece, row, col, board);
+              if (moves.some(move => move.row === attacker.row && move.col === attacker.col)) {
+                  return true; // Có thể ăn quân đang chiếu
+              }
+          }
+      }
+  }
+
+  return false;
 };
 
