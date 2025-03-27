@@ -14,9 +14,16 @@ const SignInForm = () => {
   
     try {
       const response = await signIn(email, password);
-      localStorage.setItem("token", response.token); // Store token
-      alert("Login successful!");
-      navigate("/dashboard"); // Redirect user
+      if(response.status === 200) {
+
+        localStorage.setItem("token", response.data.token); // Store token
+
+
+        alert("Login successful!");
+        navigate("/dashboard"); // Redirect user
+        
+      }
+    
     } catch (err) {
       setError(err.message || "Something went wrong!");
     }
