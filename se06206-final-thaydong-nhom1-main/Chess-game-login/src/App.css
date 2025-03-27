@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+.board.black-perspective {
+  transform: rotate(180deg);
+}
+
+.board.black-perspective .square {
+  transform: rotate(180deg); /* Đảo lại các quân cờ về hướng đúng */
+}
+

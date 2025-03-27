@@ -11,10 +11,13 @@ const ItemTypes = { PIECE: "piece" };
 const ChessGame = () => {
   const [roomId, setRoomId] = useState(""); // Lưu roomId nhập vào
   const [joined, setJoined] = useState(false); // Kiểm tra đã vào phòng chưa
+  const [isBlack, setIsBlack] = useState(false); // Xác định người chơi là bên nào
 
   const handleJoinRoom = () => {
     if (roomId.trim() !== "") {
-      connectWebSocket(roomId); // Kết nối WebSocket với roomId
+      connectWebSocket(roomId, (playerColor) => {
+        setIsBlack(playerColor === "black"); // Nếu là người chơi thứ 2 thì sẽ là đen
+      });
       setJoined(true); // Đánh dấu đã vào phòng
     }
   };
@@ -39,7 +42,7 @@ const ChessGame = () => {
           </button>
         </div>
       ) : (
-        <ChessBoard roomId={roomId} /> // Chuyển sang bàn cờ nếu đã vào phòng
+        <ChessBoard roomId={roomId} isBlack={isBlack} /> // Chuyển sang bàn cờ với thông tin màu sắc
       )}
     </div>
   );
@@ -101,7 +104,7 @@ const Square = ({ piece, row, col, movePiece, isKingSquare, selectedPiece, setSe
   );
 };
 
-const Chessboard = () => {
+const Chessboard = ({ isBlack }) => {
   const [board, setBoard] = useState(initialBoardSetup);
   const [moveHistory, setMoveHistory] = useState([]); // 🆕 Lưu lịch sử nước đi
   const [currentTurn, setCurrentTurn] = useState(true);
@@ -126,46 +129,49 @@ const Chessboard = () => {
 
   const movePiece = (fromRow, fromCol, toRow, toCol) => {
     setBoard((prevBoard) => {
-        const newBoard = prevBoard.map((row) => [...row]);
-        const piece = newBoard[fromRow][fromCol];
-        const validMoves = getValidMoves(piece, fromRow, fromCol, prevBoard);
-        if (!validMoves.some((move) => move.row === toRow && move.col === toCol)) {
-            return prevBoard;
-        }
-
-        newBoard[toRow][toCol] = piece;
-        newBoard[fromRow][fromCol] = "";
-
-        // 🆕 Ghi lại nước đi
-        const moveNotation = `${piece} ${String.fromCharCode(97 + fromCol)}${8 - fromRow} → ${String.fromCharCode(97 + toCol)}${8 - toRow}`;
-        setMoveHistory((prev) => [...prev, moveNotation]);
-
-        const nextTurn = !currentTurn;
-        const kingPos = findKingPosition(newBoard, nextTurn);
-        const kingCheck = isKingInCheck(newBoard, nextTurn);
-        const checkmate = isCheckmate(newBoard, nextTurn);
-
-        setCurrentTurn(nextTurn);
-        setIsCheck(kingCheck);
-        setCheckedKing(kingCheck ? kingPos : null);
-        setIsCheckMate(checkmate);
-        setSelectedPiece(null);
-        setValidMoves([]);
-
-        if (checkmate) {
-            setGameMessage(`🏆 Checkmate! ${currentTurn ? "Black Wins!" : "White Wins!"}`);
-        } else if (kingCheck) {
-            setGameMessage(`🔥 ${currentTurn ? "White" : "Black"} King is in check! 🔥`);
-        } else {
-            setGameMessage(`🎭 Current Turn: ${nextTurn ? "White" : "Black"}`);
-        }
-
-        // 🆕 Gửi nước đi qua WebSocket
-        sendMove({ fromRow, fromCol, toRow, toCol, piece });
-
-        return newBoard;
+      const newBoard = prevBoard.map((row) => [...row]);
+      const piece = newBoard[fromRow][fromCol];
+  
+      // Lấy danh sách nước đi hợp lệ
+      const validMoves = getValidMoves(piece, fromRow, fromCol, prevBoard);
+      if (!validMoves.some((move) => move.row === toRow && move.col === toCol)) {
+        return prevBoard; // Không cho phép đi nước không hợp lệ
+      }
+  
+      newBoard[toRow][toCol] = piece;
+      newBoard[fromRow][fromCol] = "";
+  
+      // 🆕 Kiểm tra trạng thái vua
+      const nextTurn = !currentTurn;
+      const kingPos = findKingPosition(newBoard, nextTurn);
+      const kingCheck = isKingInCheck(newBoard, nextTurn);
+      const checkmate = isCheckmate(newBoard, nextTurn);
+  
+      console.log("King Position:", kingPos);
+      console.log("Is Check:", kingCheck);
+  
+      setCurrentTurn(nextTurn);
+      setIsCheck(kingCheck);
+      setCheckedKing(kingCheck ? kingPos : null); // Nếu vua bị chiếu thì cập nhật vị trí
+      setIsCheckMate(checkmate);
+      setSelectedPiece(null);
+      setValidMoves([]);
+  
+      if (checkmate) {
+        setGameMessage(`🏆 Checkmate! ${currentTurn ? "Black Wins!" : "White Wins!"}`);
+      } else if (kingCheck) {
+        setGameMessage(`🔥 ${nextTurn ? "White" : "Black"} King is in check! 🔥`);
+      } else {
+        setGameMessage(`🎭 Current Turn: ${nextTurn ? "White" : "Black"}`);
+      }
+  
+      // 🆕 Gửi nước đi qua WebSocket
+      sendMove({ fromRow, fromCol, toRow, toCol, piece });
+  
+      return newBoard;
     });
   };
+  
 
   useEffect(() => {
     connectWebSocket((moveData) => {
@@ -190,9 +196,10 @@ const Chessboard = () => {
         
         {isCheck && !isCheckMate && checkedKing && (
           <div className="fixed top-5 right-5 bg-red-600 text-white px-4 py-2 rounded-md shadow-lg font-bold animate-pulse">
-            🔥 Warning! {currentTurn ? "White" : "Black"} King is in Check! 🔥
+            🔥 Warning! {currentTurn ? "Black" : "White"} King is in Check! 🔥
           </div>
         )}
+
 
 
         {gameMessage && (
