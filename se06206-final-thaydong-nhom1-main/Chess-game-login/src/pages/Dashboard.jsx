@@ -6,7 +6,8 @@ import {
   FaHistory,
   FaBookOpen,
   FaComments,
-  FaCog
+  FaCog,
+  FaEye
 } from "react-icons/fa";
 
 const Dashboard = () => {
