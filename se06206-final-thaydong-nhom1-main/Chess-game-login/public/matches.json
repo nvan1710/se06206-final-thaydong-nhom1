@@ -1,0 +1,79 @@
+[
+    {
+      "match_id": 1,
+      "player1": {
+        "name": "Nguyen An",
+        "avatar": "/images/NguyenAn.jpg",
+        "rating": 2266,
+        "country": "VietNam",
+        "flag": "/images/VietNam.png"
+      },
+      "player2": {
+        "name": "Huong Giang",
+        "avatar": "/images/hehe.jpg",
+        "rating": 2067,
+        "country": "Vietnam",
+        "flag": "/images/VietNam.png"
+      },
+      "score": "1-0",
+      "time_control": "15+5"
+    },
+    {
+      "match_id": 2,
+      "player1": {
+        "name": "Trong Bao",
+        "avatar": "/images/Baocaosu.jpg",
+        "rating": 1842,
+        "country": "Japan",
+        "flag": "/images/HanQuoc.png"
+      },
+      "player2": {
+        "name": "Thay Dong",
+        "avatar": "/images/Hotboy.jpg",
+        "rating": 2038,
+        "country": "Vietnam",
+        "flag": "/images/VietNam.png"
+      },
+      "score": "0-1",
+      "time_control": "20+5"
+    },
+    {
+      "match_id": 3,
+      "player1": {
+        "name": "Chen Wei",
+        "avatar": "/images/chenwei.jpg",
+        "rating": 1912,
+        "country": "China",
+        "flag": "/images/Argentina.png"
+      },
+      "player2": {
+        "name": "Ngoc Phuoc",
+        "avatar": "/images/ngocphuoc.jpg",
+        "rating": 1829,
+        "country": "Vietnam",
+        "flag": "/images/VietNam.png"
+      },
+      "score": "½-½",
+      "time_control": "10+2"
+    },
+    {
+      "match_id": 4,
+      "player1": {
+        "name": "Erik Brown",
+        "avatar": "/images/erikbrown.jpg",
+        "rating": 1742,
+        "country": "USA",
+        "flag": "/images/Brazil.jpg"
+      },
+      "player2": {
+        "name": "Duke Heather",
+        "avatar": "/images/dukeheather.jpg",
+        "rating": 1584,
+        "country": "USA",
+        "flag": "/images/Turkey.png"
+      },
+      "score": "0-1",
+      "time_control": "5+1"
+    }
+  ]
+  

@@ -10,6 +10,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import AdminPage from "./pages/AdminPages";
 import AdminLogin from "./components/AdminLogin";
+import WatchMatch from "./config/watchmatch";
 
 // HOC để bảo vệ route admin
 const ProtectedRoute = ({ element }) => {
@@ -42,6 +43,7 @@ function App() {
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/watch-match" element={<WatchMatch />} />
 
         {/* Admin Routes */}
         <Route path="/admin-login" element={<AdminLogin />} />
