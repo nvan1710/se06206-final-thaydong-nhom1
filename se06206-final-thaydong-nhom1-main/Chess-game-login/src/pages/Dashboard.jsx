@@ -12,6 +12,7 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const [showDifficulty, setShowDifficulty] = useState(false); // Hiện modal chọn mức độ
   const [showOnlineMode, setShowOnlineMode] = useState(false); // Hiện modal chọn chế độ online
 
@@ -23,6 +24,15 @@ const Dashboard = () => {
   const handlePlayOnline = (mode) => {
     setShowOnlineMode(false);
     navigate(`/play-online?mode=${mode}`);
+=======
+  const [roomId, setRoomId] = useState(""); // State để lưu roomId
+  const [showInput, setShowInput] = useState(false); // State để hiển thị ô nhập
+
+  const handleJoinRoom = () => {
+    if (roomId.trim() !== "") {
+      navigate(`/chessboard/${roomId}`); // Điều hướng đến trang bàn cờ với roomId
+    }
+>>>>>>> origin/tien-update-code
   };
 
   return (
@@ -121,6 +131,7 @@ const Dashboard = () => {
 
         {/* Buttons */}
         <div className="mt-6 space-y-4">
+<<<<<<< HEAD
           <button
             className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
             onClick={() => setShowOnlineMode(true)}
@@ -133,6 +144,40 @@ const Dashboard = () => {
           >
             Play Computer
           </button>
+=======
+          {!showInput ? (
+            <>
+              <button
+                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
+                onClick={() => setShowInput(true)}
+              >
+                Play Online
+              </button>
+              <button
+                className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
+                onClick={() => navigate("/chessboard")}
+              >
+                Play Computer
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col items-center space-y-4">
+              <input
+                type="text"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                placeholder="Enter Room ID"
+                className="w-72 p-3 text-black border rounded-lg"
+              />
+              <button
+                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
+                onClick={handleJoinRoom}
+              >
+                Join Room
+              </button>
+            </div>
+          )}
+>>>>>>> origin/tien-update-code
         </div>
       </main>
 

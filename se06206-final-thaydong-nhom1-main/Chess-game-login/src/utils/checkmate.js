@@ -13,6 +13,7 @@ export const findKingPosition = (board, isWhite) => {
   return null;
 };
 
+
 // 📍 Kiểm tra xem vua có bị chiếu không
 // 📍 Kiểm tra xem vua có bị chiếu không
 export const isKingInCheck = (board, isWhite) => {
@@ -77,7 +78,13 @@ export const isCheckmate = (board, isWhite) => {
           }
       }
   }
+<<<<<<< HEAD
 
   console.log(`🏆 Chiếu hết! Không còn nước nào hợp lệ.`);
   return true; // Không có nước nào hợp lệ → chiếu hết
 };
+=======
+console.log(`🏆 Chiếu hết! Không còn nước nào hợp lệ.`);
+  return true; // Không có nước nào hợp lệ → chiếu hết
+};
+>>>>>>> origin/tien-update-code

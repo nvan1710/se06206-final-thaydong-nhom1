@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import RoomJoin from "./components/RoomJoin";
 import ChessBoard from "./components/ChessBoard";
 import SignInForm from "./components/SignInForm";
 import SignUpForm from "./components/SignUpForm";
@@ -36,6 +37,8 @@ function App() {
         {/* Các trang chính */}
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<RoomJoin />} />
+        <Route path="/chessboard/:roomId" element={<ChessBoard />} />
         <Route path="/chessboard" element={<ChessBoard />} />
 
         {/* Authentication */}
