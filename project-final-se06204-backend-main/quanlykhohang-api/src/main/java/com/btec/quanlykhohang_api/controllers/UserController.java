@@ -3,8 +3,10 @@ package com.btec.quanlykhohang_api.controllers;
 import com.btec.quanlykhohang_api.entities.User;
 import com.btec.quanlykhohang_api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -16,19 +18,37 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // API đăng ký người dùng mới
+    // Đăng ký người dùng mới
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // Kiểm tra email đã tồn tại chưa
-        if (userService.getUserByEmail(user.getEmail()) != null) {
+        if (userService.getUserByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Email đã tồn tại. Vui lòng sử dụng email khác!");
         }
-
         try {
             User newUser = userService.createUser(user);
             return ResponseEntity.ok(newUser);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Lỗi khi đăng ký tài khoản.");
+        }
+    }
+
+    // Đăng nhập người dùng
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody User user) {
+        Optional<User> authenticatedUser = userService.login(user.getEmail(), user.getPassword());
+        return authenticatedUser
+                .map(authUser -> ResponseEntity.ok().body((Object) authUser))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email hoặc mật khẩu không đúng!"));
+    }
+
+    // Đăng xuất người dùng
+    @PostMapping("/logout/{email}")
+    public ResponseEntity<String> logout(@PathVariable String email) {
+        if (userService.getUserByEmail(email).isPresent()) {
+            userService.logoutByEmail(email);
+            return ResponseEntity.ok("Đăng xuất thành công.");
+        } else {
+            return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
         }
     }
 
@@ -38,27 +58,49 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Lấy thông tin người dùng theo ID
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    // Lấy danh sách người dùng đang online
+    @GetMapping("/online")
+    public ResponseEntity<List<User>> getOnlineUsers() {
+        return ResponseEntity.ok(userService.getOnlineUsers());
     }
 
-    // Cập nhật thông tin người dùng
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) throws Exception {
-        User user = userService.updateUser(id, updatedUser);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+    // Lấy số lượng tài khoản đăng ký trong ngày
+    @GetMapping("/registrations/today")
+    public ResponseEntity<Long> getUserRegistrationsToday() {
+        return ResponseEntity.ok(userService.getUserRegistrationsToday());
+    }
+
+    // Lấy thông tin người dùng theo Email
+    @GetMapping("/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        return userService.getUserByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.ok(new User("not_found@example.com", "", "Không", "Tồn tại", null, "", "USER")));
+    }
+
+    // Cập nhật thông tin người dùng bằng email
+    @PutMapping("/{email}")
+    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody User updatedUser) {
+        try {
+            Optional<User> user = userService.getUserByEmail(email);
+            if (user.isPresent()) {
+                User updated = userService.updateUserByEmail(email, updatedUser);
+                return ResponseEntity.ok(updated);
+            } else {
+                return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi cập nhật: " + e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
-    // Xóa người dùng
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    // Xóa người dùng bằng email
+    @DeleteMapping("/{email}")
+    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+        if (userService.getUserByEmail(email).isPresent()) {
+            userService.deleteUserByEmail(email);
+            return ResponseEntity.ok("Xóa người dùng thành công.");
+        }
+        return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
     }
 }

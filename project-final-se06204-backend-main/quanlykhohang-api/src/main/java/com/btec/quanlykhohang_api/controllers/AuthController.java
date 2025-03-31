@@ -1,23 +1,18 @@
 package com.btec.quanlykhohang_api.controllers;
 
-
 import com.btec.quanlykhohang_api.entities.User;
 import com.btec.quanlykhohang_api.security.JwtUtil;
 import com.btec.quanlykhohang_api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
-
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,7 +21,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * Sign-up: Create a new user.
@@ -35,15 +30,17 @@ public class AuthController {
      * @return ResponseEntity with the created user.
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody User user) throws Exception {
-        // Check if the email already exists
-        if (userService.getUserByEmail(user.getEmail()) != null) {
-            return new ResponseEntity<>("Email is already taken", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> signUp(@RequestBody User user) {
+        if (userService.getUserByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is already taken");
         }
 
-        // Save the user with a hashed password
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        try {
+            User createdUser = userService.createUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating user");
+        }
     }
 
     /**
@@ -58,17 +55,17 @@ public class AuthController {
         String password = loginRequest.get("password");
 
         // Find the user by email
-        User user = userService.getUserByEmail(email);
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+        Optional<User> userOptional = userService.getUserByEmail(email);
+        if (userOptional.isEmpty() || !passwordEncoder.matches(password, userOptional.get().getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
         // Generate JWT token
-        String token = JwtUtil.generateToken(user.getEmail());
+        String token = JwtUtil.generateToken(userOptional.get().getEmail());
 
         // Return the token
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }
