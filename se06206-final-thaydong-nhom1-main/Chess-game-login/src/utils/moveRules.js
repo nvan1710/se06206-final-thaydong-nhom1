@@ -1,43 +1,9 @@
 let currentTurn = true; // true là Trắng, false là Đen
-
 export const getValidMoves = (piece, row, col, board) => {
-<<<<<<< HEAD
-  let validMoves = [];
-
-  // Kiểm tra màu quân cờ
-  const isWhite = "♙♖♘♗♕♔".includes(piece);
-
-  switch (piece) {
-    case "♙": case "♟": // Tốt
-      validMoves = getPawnMoves(row, col, board, isWhite);
-      break;
-    case "♖": case "♜": // Xe
-      validMoves = getRookMoves(row, col, board, isWhite);
-      break;
-    case "♘": case "♞": // Mã
-      validMoves = getKnightMoves(row, col, board, isWhite);
-      break;
-    case "♗": case "♝": // Tượng
-      validMoves = getBishopMoves(row, col, board, isWhite);
-      break;
-    case "♕": case "♛": // Hậu
-      validMoves = [...getRookMoves(row, col, board, isWhite), ...getBishopMoves(row, col, board, isWhite)];
-      break;
-    case "♔": case "♚": // Vua
-      validMoves = getKingMoves(row, col, board, isWhite);
-      break;
-    default:
-
   const moves = [];
   const isWhite = "♙♖♘♗♕♔".includes(piece);
   const direction = isWhite ? -1 : 1; // Trắng đi lên (-1), Đen đi xuống (+1)
 
-=======
-  const moves = [];
-  const isWhite = "♙♖♘♗♕♔".includes(piece);
-  const direction = isWhite ? -1 : 1; // Trắng đi lên (-1), Đen đi xuống (+1)
-
->>>>>>> origin/tien-update-code
   switch (piece) {
     case "♙": // Tốt trắng
     case "♟": // Tốt đen
@@ -75,10 +41,6 @@ export const getValidMoves = (piece, row, col, board) => {
 
     case "♔": case "♚": // Vua
       moves.push(...getKingMoves(row, col, board));
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tien-update-code
       break;
   }
 
@@ -143,85 +105,67 @@ const getKingMoves = (row, col, board) => {
 
 
 
-// ✅ Xác minh nước đi có hợp lệ không
-// Kiểm tra xem có phải quân địch không
-const isOpponent = (piece, targetPiece) => {
-  return targetPiece && ("♙♖♘♗♕♔".includes(piece) !== "♙♖♘♗♕♔".includes(targetPiece));
-};
-
-// Lấy nước đi tuyến tính (dùng cho Xe, Tượng, Hậu)
-const getLinearMoves = (row, col, board, directions) => {
-  const moves = [];
-  directions.forEach(([dr, dc]) => {
-    let r = row + dr, c = col + dc;
-    while (r >= 0 && r < 8 && c >= 0 && c < 8) {
-      if (!board[r][c]) {
-        moves.push({ row: r, col: c });
-      } else {
-        if (isOpponent(board[row][col], board[r][c])) {
-          moves.push({ row: r, col: c });
-        }
-        break;
-      }
-      r += dr;
-      c += dc;
-    }
-  });
-  return moves;
-};
-
-// Lấy nước đi của Mã
-const getKnightMoves = (row, col, board) => {
-  const moves = [];
-  const knightMoves = [[-2, -1], [-2, 1], [2, -1], [2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2]];
-  knightMoves.forEach(([dr, dc]) => {
-    const r = row + dr, c = col + dc;
-    if (r >= 0 && r < 8 && c >= 0 && c < 8) {
-      if (!board[r][c] || isOpponent(board[row][col], board[r][c])) {
-        moves.push({ row: r, col: c });
-      }
-    }
-  });
-  return moves;
-};
-
-// Lấy nước đi của Vua
-const getKingMoves = (row, col, board) => {
-  const moves = [];
-  const kingMoves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
-  kingMoves.forEach(([dr, dc]) => {
-    const r = row + dr, c = col + dc;
-    if (r >= 0 && r < 8 && c >= 0 && c < 8) {
-      if (!board[r][c] || isOpponent(board[row][col], board[r][c])) {
-        moves.push({ row: r, col: c });
-      }
-    }
-  });
-  return moves;
-};
-}
 export const isValidMove = (piece, fromRow, fromCol, toRow, toCol, board) => {
-  const validMoves = getValidMoves(piece, fromRow, fromCol, board);
-  return validMoves.some(move => move.row === toRow && move.col === toCol);
+  const dx = toCol - fromCol;
+  const dy = toRow - fromRow;
+
+  if (fromRow === toRow && fromCol === toCol) return false;
+
+  const isWhite = "♙♖♘♗♕♔".includes(piece);
+  if (isWhite !== currentTurn) return false;
+
+  const targetPiece = board[toRow][toCol];
+
+  if (targetPiece && "♙♖♘♗♕♔".includes(targetPiece) === isWhite) return false;
+
+  let validMove = false;
+  switch (piece) {
+    case "♙": validMove = isValidPawnMove(fromRow, fromCol, toRow, toCol, board, true); break;
+    case "♟": validMove = isValidPawnMove(fromRow, fromCol, toRow, toCol, board, false); break;
+    case "♖": case "♜": validMove = isValidRookMove(fromRow, fromCol, toRow, toCol, board); break;
+    case "♘": case "♞": validMove = isValidKnightMove(dx, dy); break;
+    case "♗": case "♝": validMove = isValidBishopMove(fromRow, fromCol, toRow, toCol, board); break;
+    case "♕": case "♛": validMove = isValidQueenMove(fromRow, fromCol, toRow, toCol, board); break;
+    case "♔": case "♚": validMove = isValidKingMove(dx, dy); break;
+    default: return false;
+  }
+
+  if (validMove) {
+    // Giả lập bàn cờ mới sau nước đi
+    const newBoard = board.map((row) => [...row]);
+    newBoard[toRow][toCol] = piece;
+    newBoard[fromRow][fromCol] = "";
+
+    // Kiểm tra nếu nước đi làm vua bị chiếu => không hợp lệ
+    if (isKingInCheck(newBoard, isWhite)) return false;
+
+    currentTurn = !currentTurn; // Đổi lượt
+    return true;
+  }
+
+  return false;
 };
 
-// ✅ Xử lý di chuyển Tốt (Pawn) + Phong cấp
-const getPawnMoves = (row, col, board, isWhite) => {
-  let moves = [];
-  const direction = isWhite ? -1 : 1;
+
+
+
+
+// ✅ Tốt (Pawn) - sửa lại kiểm tra nhảy 2 ô & ăn chéo hợp lệ
+const isValidPawnMove = (fromRow, fromCol, toRow, toCol, board, isWhite) => {
+  const direction = isWhite ? -1 : 1; // Trắng đi lên (-1), Đen đi xuống (+1)
   const startRow = isWhite ? 6 : 1;
-  const endRow = isWhite ? 0 : 7;
+  const dy = toRow - fromRow;
+  const dx = Math.abs(toCol - fromCol);
+  const targetPiece = board[toRow][toCol];
 
-  // Tiến lên một ô (nếu trống)
-  if (row + direction >= 0 && row + direction < 8) {
-    if (!board[row + direction][col]) {
-      moves.push({ row: row + direction, col, promote: row + direction === endRow });
+  // Di chuyển thẳng (không được có quân cờ chặn)
+  if (dx === 0 && !targetPiece) {
+      if (dy === direction) return true; // Đi 1 ô hợp lệ
+      if (fromRow === startRow && dy === 2 * direction && !board[fromRow + direction][toCol]) {
+          return true; // Đi 2 ô từ vị trí ban đầu hợp lệ (không nhảy qua quân cờ)
+      }
+  }
 
-<<<<<<< HEAD
-      // Nếu là nước đi đầu tiên của tốt, có thể đi hai ô
-      if (row === startRow && !board[row + 2 * direction][col]) {
-        moves.push({ row: row + 2 * direction, col });
-=======
   // Ăn quân chéo (chỉ khi có quân địch ở ô đích)
   if (dx === 1 && dy === direction && targetPiece) {
       return true;
@@ -260,7 +204,7 @@ const isValidKingMove = (dx, dy) => {
   return Math.abs(dx) <= 1 && Math.abs(dy) <= 1;
 };
 
-// ✅ Sửa lại kiểm tra đường đi `isPathClear()`
+// ✅ Sửa lại kiểm tra đường đi isPathClear()
 const isPathClear = (fromRow, fromCol, toRow, toCol, board) => {
   const dx = Math.sign(toCol - fromCol);
   const dy = Math.sign(toRow - fromRow);
@@ -297,21 +241,10 @@ const isKingInCheck = (board, isWhiteTurn) => {
         if (validMoves.some(move => move.row === kingPos.row && move.col === kingPos.col)) {
           return true;
         }
->>>>>>> origin/tien-update-code
       }
     }
-
-<<<<<<< HEAD
-    // Ăn chéo (bắt quân đối thủ)
-    if (col > 0 && board[row + direction][col - 1] && "♙♖♘♗♕♔".includes(board[row + direction][col - 1]) !== isWhite) {
-      moves.push({ row: row + direction, col: col - 1, promote: row + direction === endRow });
-    }
-    if (col < 7 && board[row + direction][col + 1] && "♙♖♘♗♕♔".includes(board[row + direction][col + 1]) !== isWhite) {
-      moves.push({ row: row + direction, col: col + 1, promote: row + direction === endRow });
-    }
   }
-  return moves;
-=======
+
   return false;
 };
 // Kiểm tra xem vua có thể thoát chiếu hay không
@@ -365,103 +298,4 @@ const canBlockOrCapture = (board, isWhite) => {
   }
 
   return false;
->>>>>>> origin/tien-update-code
 };
-
-export const promotePawn = async (row, col, board, isWhite) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const promotedPiece = window.prompt(
-        "Chọn quân để phong cấp: (Q) Hậu, (R) Xe, (B) Tượng, (N) Mã",
-        "Q"
-      );
-
-      let newPiece;
-      switch (promotedPiece?.toUpperCase()) {
-        case "R": newPiece = isWhite ? "♖" : "♜"; break;
-        case "B": newPiece = isWhite ? "♗" : "♝"; break;
-        case "N": newPiece = isWhite ? "♘" : "♞"; break;
-        default: newPiece = isWhite ? "♕" : "♛"; // Mặc định là Hậu
-      }
-
-      board[row][col] = newPiece; // Cập nhật bàn cờ
-      resolve();
-    }, 100); // Chờ một chút để tránh lỗi UI
-  });
-};
-
-
-
-// ✅ Xử lý di chuyển Xe (Rook)
-const getRookMoves = (row, col, board, isWhite) => {
-  return getLinearMoves(row, col, board, isWhite, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
-};
-
-// ✅ Xử lý di chuyển Tượng (Bishop)
-const getBishopMoves = (row, col, board, isWhite) => {
-  return getLinearMoves(row, col, board, isWhite, [[1, 1], [-1, -1], [1, -1], [-1, 1]]);
-};
-
-// ✅ Xử lý di chuyển Mã (Knight)
-const getKnightMoves = (row, col, board, isWhite) => {
-  let moves = [];
-  const knightMoves = [[-2, -1], [-2, 1], [2, -1], [2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2]];
-
-  knightMoves.forEach(([dx, dy]) => {
-    let newRow = row + dx, newCol = col + dy;
-    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-      let target = board[newRow][newCol];
-      if (!target || "♙♖♘♗♕♔".includes(target) !== isWhite) {
-        moves.push({ row: newRow, col: newCol });
-      }
-    }
-  });
-
-  return moves;
-};
-
-// ✅ Xử lý di chuyển Vua (King)
-const getKingMoves = (row, col, board, isWhite) => {
-  let moves = [];
-  const kingMoves = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]];
-
-  kingMoves.forEach(([dx, dy]) => {
-    let newRow = row + dx, newCol = col + dy;
-    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-      let target = board[newRow][newCol];
-      if (!target || "♙♖♘♗♕♔".includes(target) !== isWhite) {
-        moves.push({ row: newRow, col: newCol });
-      }
-    }
-  });
-
-  return moves;
-};
-
-// ✅ Xử lý nước đi theo đường thẳng
-const getLinearMoves = (row, col, board, isWhite, directions) => {
-  let moves = [];
-
-  directions.forEach(([dx, dy]) => {
-    let newRow = row + dx, newCol = col + dy;
-    while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-      let target = board[newRow][newCol];
-      if (!target) {
-        moves.push({ row: newRow, col: newCol });
-      } else {
-        if ("♙♖♘♗♕♔".includes(target) !== isWhite) {
-          moves.push({ row: newRow, col: newCol });
-        }
-        break;
-      }
-      newRow += dx;
-      newCol += dy;
-    }
-  });
-
-  return moves;
-};
-
-
-// ✅ Xuất tất cả các hàm cần thiết
-export { getPawnMoves, getRookMoves, getBishopMoves, getKnightMoves, getKingMoves, getLinearMoves };
