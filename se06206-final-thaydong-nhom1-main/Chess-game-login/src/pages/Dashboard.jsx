@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaChess, FaPuzzlePiece, FaGraduationCap, FaVideo, FaNewspaper, FaUsers, FaEllipsisH } from "react-icons/fa";
+import { FaChess,FaPuzzlePiece, FaGraduationCap,FaVideo,FaNewspaper, FaUsers,FaEllipsisH,FaTrophy,FaHistory,FaBookOpen,FaComments,FaCog,} from "react-icons/fa";
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [roomId, setRoomId] = useState(""); // State để lưu roomId
-  const [showInput, setShowInput] = useState(false); // State để hiển thị ô nhập
-
-  const handleJoinRoom = () => {
-    if (roomId.trim() !== "") {
-      navigate(`/chessboard/${roomId}`); // Điều hướng đến trang bàn cờ với roomId
-    }
-  };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
@@ -27,32 +20,27 @@ const Dashboard = () => {
             <FaChess />
             <span>Play</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaPuzzlePiece />
-            <span>Puzzles</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/leaderboard")}>
+            <FaTrophy />
+            <span>Leaderboard</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaGraduationCap />
-            <span>Learn</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/history")}>
+            <FaHistory />
+            <span>Game History</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaVideo />
-            <span>Watch</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/tutorials")}>
+            <FaBookOpen />
+            <span>Tutorials</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaNewspaper />
-            <span>News</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/forums")}>
+            <FaComments />
+            <span>Forums</span>
           </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaUsers />
-            <span>Social</span>
-          </button>
-          <button className="flex items-center space-x-2 hover:text-green-400">
-            <FaEllipsisH />
-            <span>More</span>
+          <button className="flex items-center space-x-2 hover:text-green-400" onClick={() => navigate("/settings")}>
+            <FaCog />
+            <span>Settings</span>
           </button>
         </nav>
-
         <div className="mt-auto">
           <button className="w-full bg-green-500 text-black py-2 rounded-md font-bold hover:bg-green-600">
             Sign Up
@@ -96,38 +84,18 @@ const Dashboard = () => {
 
         {/* Buttons */}
         <div className="mt-6 space-y-4">
-          {!showInput ? (
-            <>
-              <button
-                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
-                onClick={() => setShowInput(true)}
-              >
-                Play Online
-              </button>
-              <button
-                className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
-                onClick={() => navigate("/chessboard")}
-              >
-                Play Computer
-              </button>
-            </>
-          ) : (
-            <div className="flex flex-col items-center space-y-4">
-              <input
-                type="text"
-                value={roomId}
-                onChange={(e) => setRoomId(e.target.value)}
-                placeholder="Enter Room ID"
-                className="w-72 p-3 text-black border rounded-lg"
-              />
-              <button
-                className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
-                onClick={handleJoinRoom}
-              >
-                Join Room
-              </button>
-            </div>
-          )}
+          <button
+            className="w-72 bg-green-500 text-black py-3 rounded-lg text-xl font-bold hover:bg-green-600 transition"
+            onClick={() => navigate("/chessboard")}
+          >
+            Play Online
+          </button>
+          <button
+            className="w-72 bg-gray-700 text-white py-3 rounded-lg text-xl font-bold hover:bg-gray-600 transition"
+            onClick={() => navigate("/chessboard")}
+          >
+            Play Computer
+          </button>
         </div>
       </main>
     </div>
