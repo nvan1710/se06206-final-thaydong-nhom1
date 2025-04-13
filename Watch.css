@@ -1,0 +1,155 @@
+/* Container chính với nền gradient động */
+.watch-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #0d0d0d, #1a1a1a, #262626, #333);
+    background-size: 400% 400%;
+    animation: backgroundMove 10s ease infinite;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Hiệu ứng di chuyển nền */
+@keyframes backgroundMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Tiêu đề phát sáng */
+.neon-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px #fff, 0 0 10px #0ff, 0 0 15px #0ff, 0 0 20px #0ff;
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+/* Hiệu ứng glowing */
+@keyframes glow {
+    from { text-shadow: 0 0 5px #fff, 0 0 10px #0ff, 0 0 15px #0ff; }
+    to { text-shadow: 0 0 10px #fff, 0 0 20px #0ff, 0 0 30px #0ff; }
+}
+
+/* Container video với hiệu ứng hover */
+.video-container {
+    width: 90%;
+    max-width: 800px;
+    border-radius: 10px;
+    overflow: hidden;
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Fix lỗi không click được video */
+.video-frame {
+    width: 100%;
+    height: 450px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    position: relative;
+    z-index: 10; /* Đặt video lên trên cùng */
+    pointer-events: auto; /* Cho phép click vào video */
+}
+
+/* Ngăn hiệu ứng che mất video */
+.glow, .particles, .video-container::before {
+    pointer-events: none;
+}
+
+/* Hiệu ứng hover video */
+.video-container:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+/* Viền phát sáng quanh video */
+.video-container::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0) 80%);
+    border-radius: 15px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.video-container:hover::before {
+    opacity: 1;
+}
+
+/* Phần chữ phụ với hiệu ứng nhấp nháy */
+.subtext {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Hiệu ứng ánh sáng xung quanh */
+.glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.4) 10%, rgba(0, 255, 255, 0) 80%);
+    transform: translate(-50%, -50%);
+    animation: glowMove 5s infinite alternate ease-in-out;
+}
+
+@keyframes glowMove {
+    from { transform: translate(-50%, -50%) scale(1); }
+    to { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Hiệu ứng hạt bay lơ lửng */
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particles::before,
+.particles::after {
+    content: "";
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, rgba(255, 255, 255, 0) 80%);
+    border-radius: 50%;
+    animation: float 8s infinite alternate ease-in-out;
+}
+
+.particles::before {
+    top: 10%;
+    left: 10%;
+}
+
+.particles::after {
+    bottom: 10%;
+    right: 10%;
+}
+
+/* Hiệu ứng bay của hạt */
+@keyframes float {
+    from { transform: translateY(0); }
+    to { transform: translateY(-20px); }
+}
